@@ -91,22 +91,24 @@
 				</ToggleGroup.Item>
 			</ToggleGroup.Root>
 
-			<Select.Root
-				type="single"
-				value={sortBy}
-				onValueChange={(v) => {
-					if (v) sortBy = v;
-				}}
-			>
-				<Select.Trigger class="w-[160px]">
-					{sortLabel}
-				</Select.Trigger>
-				<Select.Content>
-					{#each sortOptions as opt (opt.value)}
-						<Select.Item value={opt.value} label={opt.label} />
-					{/each}
-				</Select.Content>
-			</Select.Root>
+			{#if viewMode === 'gallery'}
+				<Select.Root
+					type="single"
+					value={sortBy}
+					onValueChange={(v) => {
+						if (v) sortBy = v;
+					}}
+				>
+					<Select.Trigger class="w-[160px]">
+						{sortLabel}
+					</Select.Trigger>
+					<Select.Content>
+						{#each sortOptions as opt (opt.value)}
+							<Select.Item value={opt.value} label={opt.label} />
+						{/each}
+					</Select.Content>
+				</Select.Root>
+			{/if}
 
 			<Button onclick={() => (searchOpen = true)}>
 				<Plus class="h-4 w-4" />
@@ -155,7 +157,7 @@
 			{/each}
 		</div>
 	{:else}
-		<GameTable games={sortedGames} />
+		<GameTable {games} />
 	{/if}
 </div>
 
