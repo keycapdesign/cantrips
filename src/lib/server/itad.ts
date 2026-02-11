@@ -60,8 +60,8 @@ export interface ITADPriceItem {
 		cut: number;
 		voucher: string | null;
 		flag: string | null;
-		drm: string[];
-		platforms: string[];
+		drm: Array<string | { id: number; name: string }>;
+		platforms: Array<string | { id: number; name: string }>;
 		url: string;
 		timestamp: string;
 		expiry: string | null;

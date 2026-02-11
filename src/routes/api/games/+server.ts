@@ -42,12 +42,14 @@ export const POST: RequestHandler = async (event) => {
 	}
 
 	const itad = new ITADClient(env.ITAD_API_KEY);
-	const [info, overview] = await Promise.all([
+	const [info, overview, prices] = await Promise.all([
 		itad.getGameInfo(itadId),
-		itad.getOverview([itadId])
+		itad.getOverview([itadId]),
+		itad.getPrices([itadId])
 	]);
 
 	const overviewData = overview[0];
+	const priceData = prices[0];
 
 	const insertResult = await db
 		.prepare(
@@ -77,15 +79,36 @@ export const POST: RequestHandler = async (event) => {
 
 	const gameId = insertResult.meta.last_row_id;
 
-	if (overviewData?.current) {
-		const curr = overviewData.current;
-		await db
-			.prepare(
-				`INSERT INTO deals (game_id, sale_price, regular_price, cut_percent, shop_name, deal_url, source)
-			VALUES (?, ?, ?, ?, ?, ?, 'poll')`
-			)
-			.bind(gameId, curr.price.amount, curr.regular.amount, curr.cut, curr.shop.name, curr.url)
-			.run();
+	if (priceData?.deals?.length) {
+		const stmts = priceData.deals.map((deal) =>
+			db
+				.prepare(
+					`INSERT INTO deals (game_id, sale_price, regular_price, cut_percent,
+					shop_name, shop_id, deal_url, drm, platforms, flag, expires_at, received_at, source)
+				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'poll')`
+				)
+				.bind(
+					gameId,
+					deal.price.amount,
+					deal.regular.amount,
+					deal.cut,
+					deal.shop.name,
+					deal.shop.id,
+					deal.url,
+					deal.drm?.length
+						? deal.drm.map((d) => (typeof d === 'string' ? d : d.name)).join(', ')
+						: null,
+					deal.platforms?.length
+						? deal.platforms.map((p) => (typeof p === 'string' ? p : p.name)).join(', ')
+						: null,
+					deal.flag || null,
+					deal.expiry || null,
+					deal.timestamp || null
+				)
+		);
+		for (let i = 0; i < stmts.length; i += 100) {
+			await db.batch(stmts.slice(i, i + 100));
+		}
 	}
 
 	const game = await db
