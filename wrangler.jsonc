@@ -1,17 +1,37 @@
 {
-	"name": "cantrips",
+	"name": "dealtracker-cantrip",
 	"compatibility_date": "2025-01-01",
-	"compatibility_flags": ["nodejs_compat"],
+	"compatibility_flags": [
+		"nodejs_compat"
+	],
 	"main": ".svelte-kit/cloudflare/_worker.js",
 	"assets": {
 		"directory": ".svelte-kit/cloudflare",
 		"binding": "ASSETS"
 	},
+	"routes": [
+		{
+			"pattern": "deals.spellslots.dev",
+			"zone_name": "spellslots.dev",
+			"custom_domain": true
+		}
+	],
 	"d1_databases": [
 		{
 			"binding": "DB",
 			"database_name": "cantrips-dealtracker-db",
 			"database_id": "aa558206-07ae-4837-ba6c-621d7ff27c57"
 		}
-	]
+	],
+	"vars": {
+		"BETTER_AUTH_URL": "https://deals.spellslots.dev"
+	},
+	"observability": {
+		"logs": {
+			"enabled": true,
+			"invocation_logs": true
+		}
+	},
+	"workers_dev": false,
+	"preview_urls": true
 }
