@@ -1,16 +1,13 @@
 # deps
 node_modules/
 
-# database
-data/
-*.db
-*.db-wal
-*.db-shm
-
 # env
 .env
+.dev.vars
 
-# frontend build output
-frontend/build/
-frontend/node_modules/
-frontend/.svelte-kit/
+# SvelteKit
+.svelte-kit/
+build/
+
+# Cloudflare
+.wrangler/
