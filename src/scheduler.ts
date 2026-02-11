@@ -1,16 +1,23 @@
 import { Cron } from "croner";
 import { exampleJob } from "./jobs/example";
+import { priceRefreshJob } from "./jobs/price-refresh";
 
 export function scheduledJobs() {
   // Runs every hour
   new Cron("0 * * * *", () => {
-    console.log("⏰ Running example job");
+    console.log("Running example job");
     exampleJob();
   });
 
-  // Add more scheduled jobs here:
-  // new Cron("*/15 * * * *", () => checkGameDeals());
-  // new Cron("0 9 * * *", () => dailyDigest());
+  // Weekly price refresh: Every Sunday at 8 AM Eastern
+  new Cron("0 8 * * 0", { timezone: "America/New_York" }, async () => {
+    console.log("Running weekly price refresh");
+    try {
+      await priceRefreshJob();
+    } catch (error) {
+      console.error("Price refresh cron failed:", error);
+    }
+  });
 
-  console.log("📅 Scheduled jobs registered");
+  console.log("Scheduled jobs registered");
 }

@@ -7,6 +7,8 @@ RUN bun install --frozen-lockfile --production
 
 COPY src ./src
 
+RUN mkdir -p /app/data
+
 USER bun
 EXPOSE 3000
 

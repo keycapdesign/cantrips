@@ -1,2 +1,16 @@
 # deps
 node_modules/
+
+# database
+data/
+*.db
+*.db-wal
+*.db-shm
+
+# env
+.env
+
+# frontend build output
+frontend/build/
+frontend/node_modules/
+frontend/.svelte-kit/

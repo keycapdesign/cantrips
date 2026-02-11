@@ -2,3 +2,12 @@ node_modules
 .git
 .gitignore
 README.md
+frontend/node_modules
+frontend/build
+frontend/.svelte-kit
+*.db
+*.db-wal
+*.db-shm
+data/
+.env
+.context
