@@ -11,3 +11,6 @@ build/
 
 # Cloudflare
 .wrangler/
+
+# MCP
+.mcp.json
