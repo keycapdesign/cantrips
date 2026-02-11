@@ -20,8 +20,21 @@ export async function priceRefreshJob(db: D1Database, apiKey: string, webhookUrl
 
 	const priceData = await itad.getPrices(itadIds);
 
+	// Snapshot previous best prices so we only notify on price drops
+	const { results: prevBestRows } = await db
+		.prepare('SELECT game_id, MIN(sale_price) as best_price FROM deals GROUP BY game_id')
+		.all<{ game_id: number; best_price: number }>();
+	const prevBestPrice = new Map(prevBestRows.map((r) => [r.game_id, r.best_price]));
+
+	// Delete existing deals for all refreshed games before inserting fresh data
+	const deleteStmts = games.map((g) =>
+		db.prepare('DELETE FROM deals WHERE game_id = ?').bind(g.id)
+	);
+	for (let i = 0; i < deleteStmts.length; i += 100) {
+		await db.batch(deleteStmts.slice(i, i + 100));
+	}
+
 	const stmts: D1PreparedStatement[] = [];
-	const notifyQueue: { game: Game; dealData: Parameters<typeof db.prepare> }[] = [];
 
 	for (const priceItem of priceData) {
 		const game = gameByItadId.get(priceItem.id);
@@ -32,8 +45,8 @@ export async function priceRefreshJob(db: D1Database, apiKey: string, webhookUrl
 				db
 					.prepare(
 						`INSERT INTO deals (game_id, sale_price, regular_price, cut_percent,
-					shop_name, shop_id, deal_url, drm, platforms, flag, expires_at, source)
-				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'poll')`
+					shop_name, shop_id, deal_url, drm, platforms, flag, expires_at, received_at, source)
+				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'poll')`
 					)
 					.bind(
 						game.id,
@@ -43,10 +56,15 @@ export async function priceRefreshJob(db: D1Database, apiKey: string, webhookUrl
 						deal.shop.name,
 						deal.shop.id,
 						deal.url,
-						deal.drm?.length ? deal.drm.join(', ') : null,
-						deal.platforms?.length ? JSON.stringify(deal.platforms) : null,
+						deal.drm?.length
+							? deal.drm.map((d) => (typeof d === 'string' ? d : d.name)).join(', ')
+							: null,
+						deal.platforms?.length
+							? deal.platforms.map((p) => (typeof p === 'string' ? p : p.name)).join(', ')
+							: null,
 						deal.flag || null,
-						deal.expiry || null
+						deal.expiry || null,
+						deal.timestamp || null
 					)
 			);
 		}
@@ -80,7 +98,9 @@ export async function priceRefreshJob(db: D1Database, apiKey: string, webhookUrl
 							shop_name: deal.shop.name,
 							deal_url: deal.url,
 							flag: deal.flag,
-							drm: deal.drm?.length ? deal.drm.join(', ') : null,
+							drm: deal.drm?.length
+								? deal.drm.map((d) => (typeof d === 'string' ? d : d.name)).join(', ')
+								: null,
 							expires_at: deal.expiry
 						} as Partial<Deal>
 					});
@@ -89,11 +109,17 @@ export async function priceRefreshJob(db: D1Database, apiKey: string, webhookUrl
 		}
 	}
 
-	for (const { game, deal } of bestPerGame.values()) {
-		await sendDealNotification(webhookUrl, game, deal as Deal);
+	let notified = 0;
+	for (const { game, price, deal } of bestPerGame.values()) {
+		const prev = prevBestPrice.get(game.id);
+		// Only notify if this is a new deal (no previous data) or the price dropped
+		if (prev === undefined || price < prev) {
+			await sendDealNotification(webhookUrl, game, deal as Deal);
+			notified++;
+		}
 	}
 
 	console.log(
-		`Price refresh complete. ${priceData.length} games processed, ${bestPerGame.size} notifications sent.`
+		`Price refresh complete. ${priceData.length} games processed, ${notified} notifications sent.`
 	);
 }

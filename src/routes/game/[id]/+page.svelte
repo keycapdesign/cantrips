@@ -62,14 +62,7 @@
 		return parseTagsUtil(tags);
 	}
 
-	function parsePlatforms(platforms: string | null): string {
-		if (!platforms) return '';
-		try {
-			return JSON.parse(platforms).join(', ');
-		} catch {
-			return platforms;
-		}
-	}
+
 </script>
 
 {#if loading}
@@ -195,8 +188,8 @@
 						<Table.Header>
 							<Table.Row>
 								<Table.Head>Shop</Table.Head>
-								<Table.Head>DRM</Table.Head>
-								<Table.Head>Platforms</Table.Head>
+								<Table.Head>Found</Table.Head>
+								<Table.Head>Expires</Table.Head>
 								<Table.Head>Discount</Table.Head>
 								<Table.Head class="text-right">Price</Table.Head>
 								<Table.Head></Table.Head>
@@ -207,10 +200,10 @@
 								<Table.Row>
 									<Table.Cell class="font-medium">{deal.shop_name}</Table.Cell>
 									<Table.Cell class="text-muted-foreground">
-										{deal.drm || 'Unknown'}
+										{deal.received_at ? new Date(deal.received_at).toLocaleDateString() : '--'}
 									</Table.Cell>
 									<Table.Cell class="text-muted-foreground">
-										{parsePlatforms(deal.platforms) || '--'}
+										{deal.expires_at ? new Date(deal.expires_at).toLocaleDateString() : '--'}
 									</Table.Cell>
 									<Table.Cell>
 										<DealBadge cut={deal.cut_percent} flag={deal.flag} />

@@ -23,8 +23,8 @@ export const POST: RequestHandler = async (event) => {
 			cut?: number;
 			shop?: { id: number; name: string };
 			url?: string;
-			drm?: string[];
-			platforms?: string[];
+			drm?: Array<string | { id: number; name: string }>;
+			platforms?: Array<string | { id: number; name: string }>;
 			flag?: string;
 			expiry?: string;
 		};
@@ -53,8 +53,12 @@ export const POST: RequestHandler = async (event) => {
 				payload.shop?.name ?? 'Unknown',
 				payload.shop?.id ?? null,
 				payload.url ?? null,
-				payload.drm ? JSON.stringify(payload.drm) : null,
-				payload.platforms ? JSON.stringify(payload.platforms) : null,
+				payload.drm?.length
+					? payload.drm.map((d) => (typeof d === 'string' ? d : d.name)).join(', ')
+					: null,
+				payload.platforms?.length
+					? payload.platforms.map((p) => (typeof p === 'string' ? p : p.name)).join(', ')
+					: null,
 				payload.flag ?? null,
 				payload.expiry ?? null
 			)
