@@ -1,0 +1,8 @@
+{
+	"name": "cantrips-cron",
+	"main": "index.ts",
+	"compatibility_date": "2025-01-01",
+	"triggers": {
+		"crons": ["0 8 * * *"]
+	}
+}
