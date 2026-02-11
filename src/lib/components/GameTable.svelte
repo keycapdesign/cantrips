@@ -36,11 +36,11 @@
 
 	interface Props {
 		games: Game[];
+		sorting: SortingState;
+		onSortingChange: (sorting: SortingState) => void;
 	}
 
-	let { games }: Props = $props();
-
-	let sorting = $state<SortingState>([]);
+	let { games, sorting, onSortingChange }: Props = $props();
 
 	const columns: ColumnDef<Game>[] = [
 		{
@@ -114,11 +114,8 @@
 			}
 		},
 		onSortingChange(updater) {
-			if (updater instanceof Function) {
-				sorting = updater(sorting);
-			} else {
-				sorting = updater;
-			}
+			const newSorting = updater instanceof Function ? updater(sorting) : updater;
+			onSortingChange(newSorting);
 		},
 		getCoreRowModel: getCoreRowModel(),
 		getSortedRowModel: getSortedRowModel()
@@ -129,7 +126,13 @@
 	{@const sorted = column.getIsSorted()}
 	<button
 		class="inline-flex items-center gap-1 hover:text-foreground transition-colors {align === 'right' ? 'ml-auto' : ''}"
-		onclick={() => column.toggleSorting()}
+		onclick={() => {
+			if (sorted) {
+				column.toggleSorting(sorted === 'asc');
+			} else {
+				column.toggleSorting(column.columnDef.sortDescFirst ?? false);
+			}
+		}}
 	>
 		{label}
 		{#if sorted === 'asc'}

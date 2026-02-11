@@ -10,8 +10,8 @@
 	"d1_databases": [
 		{
 			"binding": "DB",
-			"database_name": "cantrips-db",
-			"database_id": "00000000-0000-0000-0000-000000000000"
+			"database_name": "cantrips-dealtracker-db",
+			"database_id": "aa558206-07ae-4837-ba6c-621d7ff27c57"
 		}
 	]
 }
