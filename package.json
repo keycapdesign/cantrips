@@ -5,6 +5,7 @@
 	"type": "module",
 	"scripts": {
 		"dev": "vite dev",
+		"db:setup": "wrangler d1 execute cantrips-dealtracker-db --local --file=migrations/0001_init.sql && wrangler d1 execute cantrips-dealtracker-db --local --file=migrations/seed.sql",
 		"build": "vite build",
 		"preview": "vite preview",
 		"prepare": "svelte-kit sync || echo ''",
