@@ -41,7 +41,7 @@
 		{#snippet children()}
 			<Button variant="ghost" size="sm">
 				<ArrowUpDown class="h-4 w-4" />
-				Sort
+				<span class="hidden sm:inline">Sort</span>
 			</Button>
 		{/snippet}
 	</Popover.Trigger>

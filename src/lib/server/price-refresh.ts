@@ -137,7 +137,26 @@ export async function priceRefreshJob(db: D1Database, apiKey: string, webhookUrl
 		}
 	}
 
+	// Backfill missing banner URLs
+	const missingBanners = games.filter((g) => !g.banner_url && g.itad_id);
+	let bannersUpdated = 0;
+	for (const game of missingBanners) {
+		try {
+			const info = await itad.getGameInfo(game.itad_id!);
+			const banner = info.assets?.banner || null;
+			if (banner) {
+				await db
+					.prepare('UPDATE games SET banner_url = ? WHERE id = ?')
+					.bind(banner, game.id)
+					.run();
+				bannersUpdated++;
+			}
+		} catch {
+			// Skip failures silently -- will retry next refresh
+		}
+	}
+
 	console.log(
-		`Price refresh complete. ${priceData.length} games processed, ${notified} notifications sent.`
+		`Price refresh complete. ${priceData.length} games processed, ${notified} notifications sent, ${bannersUpdated} banners backfilled.`
 	);
 }

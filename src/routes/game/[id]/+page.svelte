@@ -91,7 +91,7 @@
 		<!-- Header -->
 		<Card.Root>
 			<Card.Content class="pt-6">
-				<div class="flex gap-6">
+				<div class="flex gap-4 sm:gap-6">
 					{#if game.banner_url}
 						<img
 							src={game.banner_url}
@@ -102,8 +102,8 @@
 					<div class="flex-1 space-y-3">
 						<div class="flex items-start justify-between">
 							<div class="space-y-1">
-								<div class="flex items-center gap-2">
-									<h1 class="text-3xl font-bold">{game.title}</h1>
+								<div class="flex flex-wrap items-center gap-2">
+									<h1 class="text-2xl sm:text-3xl font-bold">{game.title}</h1>
 									{#if gameStatus && gameStatus.label !== 'Released'}
 										<Badge variant="secondary" class={gameStatus.class}>
 											{gameStatus.label}
@@ -150,7 +150,7 @@
 									disabled={removing}
 								>
 									<Trash2 class="h-4 w-4" />
-									{removing ? 'Removing...' : 'Remove'}
+									<span class="hidden sm:inline">{removing ? 'Removing...' : 'Remove'}</span>
 								</Button>
 							</div>
 						</div>
@@ -201,8 +201,8 @@
 						<Table.Header>
 							<Table.Row>
 								<Table.Head>Shop</Table.Head>
-								<Table.Head>Found</Table.Head>
-								<Table.Head>Expires</Table.Head>
+								<Table.Head class="hidden sm:table-cell">Found</Table.Head>
+								<Table.Head class="hidden sm:table-cell">Expires</Table.Head>
 								<Table.Head>Discount</Table.Head>
 								<Table.Head class="text-right">Price</Table.Head>
 								<Table.Head></Table.Head>
@@ -212,10 +212,10 @@
 							{#each game.deals as deal (deal.id)}
 								<Table.Row>
 									<Table.Cell class="font-medium">{deal.shop_name}</Table.Cell>
-									<Table.Cell class="text-muted-foreground">
+									<Table.Cell class="hidden sm:table-cell text-muted-foreground">
 										{deal.received_at ? new Date(deal.received_at).toLocaleDateString() : '--'}
 									</Table.Cell>
-									<Table.Cell class="text-muted-foreground">
+									<Table.Cell class="hidden sm:table-cell text-muted-foreground">
 										{deal.expires_at ? new Date(deal.expires_at).toLocaleDateString() : '--'}
 									</Table.Cell>
 									<Table.Cell>
@@ -235,7 +235,7 @@
 										{#if deal.deal_url}
 											<Button size="sm" href={deal.deal_url} target="_blank">
 												<ExternalLink class="h-4 w-4" />
-												Buy
+												<span class="hidden sm:inline">Buy</span>
 											</Button>
 										{/if}
 									</Table.Cell>

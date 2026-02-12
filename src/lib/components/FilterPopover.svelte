@@ -68,7 +68,7 @@
 		{#snippet children()}
 			<Button variant="ghost" size="sm">
 				<ListFilter class="h-4 w-4" />
-				Filter
+				<span class="hidden sm:inline">Filter</span>
 				{#if activeCount > 0}
 					<Badge variant="secondary" class="ml-0.5 h-5 px-1.5 text-xs">{activeCount}</Badge>
 				{/if}

@@ -154,7 +154,7 @@
 <div class="space-y-4">
 	<h1 class="text-2xl font-bold">Watchlist</h1>
 
-	<div class="flex items-center justify-between">
+	<div class="flex flex-wrap items-center justify-between gap-2">
 		<ToggleGroup.Root
 			type="single"
 			value={viewMode}
@@ -185,11 +185,11 @@
 			/>
 			<ToolbarSearch value={searchQuery} onValueChange={(v) => (searchQuery = v)} />
 
-			<div class="mx-1 h-6 w-px bg-border"></div>
+			<div class="mx-1 h-6 w-px bg-border hidden sm:block"></div>
 
 			<Button onclick={() => (searchOpen = true)}>
 				<Plus class="h-4 w-4" />
-				Add Game
+				<span class="hidden sm:inline">Add Game</span>
 				<kbd
 					class="pointer-events-none ml-1 hidden h-5 select-none items-center gap-0.5 rounded border bg-muted/10 px-1.5 font-mono text-[10px] font-medium opacity-100 sm:inline-flex"
 				>
