@@ -21,7 +21,7 @@ export const api = {
 		list: () => request('/api/games'),
 		get: (id: string | number) => request(`/api/games/${id}`),
 		search: (q: string) => request(`/api/games/search?q=${encodeURIComponent(q)}`),
-		add: (game: { itadId: string; title: string }) =>
+		add: (game: { itadId: string; title: string; bannerUrl?: string | null }) =>
 			request('/api/games', { method: 'POST', body: JSON.stringify(game) }),
 		remove: (id: string | number) => request(`/api/games/${id}`, { method: 'DELETE' }),
 		history: (id: string | number) => request(`/api/games/${id}/history`)

@@ -26,8 +26,8 @@ export const POST: RequestHandler = async (event) => {
 	const session = await requireApproved(event);
 	const db = event.locals.db;
 	const env = (event.platform as App.Platform).env;
-	const body = (await event.request.json()) as { itadId?: string; title?: string };
-	const { itadId, title } = body;
+	const body = (await event.request.json()) as { itadId?: string; title?: string; bannerUrl?: string | null };
+	const { itadId, title, bannerUrl } = body;
 
 	if (!itadId || !title) {
 		return json({ error: 'itadId and title are required' }, { status: 400 });
@@ -64,7 +64,7 @@ export const POST: RequestHandler = async (event) => {
 			info.slug || null,
 			info.type || null,
 			info.assets?.boxart || null,
-			info.assets?.banner || null,
+			info.assets?.banner || bannerUrl || null,
 			info.releaseDate || null,
 			info.tags ? JSON.stringify(info.tags) : null,
 			info.reviews?.score ?? null,

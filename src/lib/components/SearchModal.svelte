@@ -62,7 +62,7 @@
 		adding = game.id;
 		error = '';
 		try {
-			await api.games.add({ itadId: game.id, title: game.title });
+			await api.games.add({ itadId: game.id, title: game.title, bannerUrl: game.assets?.banner600 || null });
 			toast.success(`${game.title} added to watchlist`);
 			onadd();
 			open = false;

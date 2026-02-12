@@ -161,14 +161,14 @@
 		<!-- Invite Codes -->
 		<Card.Root>
 			<Card.Header>
-				<div class="flex items-center justify-between">
+				<div class="flex flex-wrap items-start justify-between gap-3">
 					<div>
 						<Card.Title>Invite Codes</Card.Title>
-						<Card.Description>Generate and manage invite codes for new users</Card.Description>
+						<Card.Description class="hidden sm:block">Generate and manage invite codes for new users</Card.Description>
 					</div>
 					<Button onclick={generateCode} disabled={generating} size="sm">
 						<Plus class="h-4 w-4" />
-						{generating ? 'Generating...' : 'Generate Code'}
+						<span class="hidden sm:inline">{generating ? 'Generating...' : 'Generate Code'}</span>
 					</Button>
 				</div>
 			</Card.Header>
@@ -187,7 +187,7 @@
 							<Table.Row>
 								<Table.Head>Code</Table.Head>
 								<Table.Head>Status</Table.Head>
-								<Table.Head>Created</Table.Head>
+								<Table.Head class="hidden sm:table-cell">Created</Table.Head>
 								<Table.Head class="text-right">Actions</Table.Head>
 							</Table.Row>
 						</Table.Header>
@@ -208,7 +208,7 @@
 											<Badge variant="default">Available</Badge>
 										{/if}
 									</Table.Cell>
-									<Table.Cell class="text-muted-foreground">
+									<Table.Cell class="hidden sm:table-cell text-muted-foreground">
 										{formatDate(invite.created_at)}
 									</Table.Cell>
 									<Table.Cell class="text-right">
@@ -258,7 +258,7 @@
 						<Table.Header>
 							<Table.Row>
 								<Table.Head>User</Table.Head>
-								<Table.Head>Email</Table.Head>
+								<Table.Head class="hidden sm:table-cell">Email</Table.Head>
 								<Table.Head>Status</Table.Head>
 								<Table.Head class="text-right">Actions</Table.Head>
 							</Table.Row>
@@ -277,7 +277,7 @@
 											<span class="font-medium">{user.name}</span>
 										</div>
 									</Table.Cell>
-									<Table.Cell class="text-muted-foreground">
+									<Table.Cell class="hidden sm:table-cell text-muted-foreground">
 										{user.email}
 									</Table.Cell>
 									<Table.Cell>
@@ -297,7 +297,8 @@
 												onclick={() =>
 													toggleAdmin(user.id, user.role || 'user')}
 											>
-												{user.role === 'admin' ? 'Remove admin' : 'Make admin'}
+												<span class="hidden sm:inline">{user.role === 'admin' ? 'Remove admin' : 'Make admin'}</span>
+												<span class="sm:hidden">{user.role === 'admin' ? 'Demote' : 'Promote'}</span>
 											</Button>
 											{#if !user.approved}
 												<Button
