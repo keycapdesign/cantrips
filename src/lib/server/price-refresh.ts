@@ -20,6 +20,24 @@ export async function priceRefreshJob(db: D1Database, apiKey: string, webhookUrl
 
 	const priceData = await itad.getPrices(itadIds);
 
+	// Backfill steam_app_id for games that don't have one yet
+	const missingAppId = games.filter((g) => g.steam_app_id == null);
+	if (missingAppId.length > 0) {
+		const steamAppIds = await itad.lookupSteamAppIds(missingAppId.map((g) => g.itad_id!));
+		const updateStmts = [];
+		for (const [itadId, appId] of steamAppIds) {
+			const game = gameByItadId.get(itadId);
+			if (game) {
+				updateStmts.push(
+					db.prepare('UPDATE games SET steam_app_id = ? WHERE id = ?').bind(appId, game.id)
+				);
+			}
+		}
+		for (let i = 0; i < updateStmts.length; i += 100) {
+			await db.batch(updateStmts.slice(i, i + 100));
+		}
+	}
+
 	// Snapshot previous best prices so we only notify on price drops
 	const { results: prevBestRows } = await db
 		.prepare('SELECT game_id, MIN(sale_price) as best_price FROM deals GROUP BY game_id')

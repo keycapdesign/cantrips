@@ -1,0 +1,1 @@
+ALTER TABLE games ADD COLUMN steam_app_id INTEGER;

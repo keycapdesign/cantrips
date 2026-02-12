@@ -42,21 +42,23 @@ export const POST: RequestHandler = async (event) => {
 	}
 
 	const itad = new ITADClient(env.ITAD_API_KEY);
-	const [info, overview, prices] = await Promise.all([
+	const [info, overview, prices, steamAppIds] = await Promise.all([
 		itad.getGameInfo(itadId),
 		itad.getOverview([itadId]),
-		itad.getPrices([itadId])
+		itad.getPrices([itadId]),
+		itad.lookupSteamAppIds([itadId])
 	]);
 
 	const overviewData = overview[0];
 	const priceData = prices[0];
+	const steamAppId = steamAppIds.get(itadId) ?? null;
 
 	const insertResult = await db
 		.prepare(
 			`INSERT INTO games (title, itad_id, slug, game_type, boxart_url, banner_url,
 			release_date, tags, review_score, early_access, players_recent, players_peak,
-			history_low, history_low_store, added_by)
-		VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+			history_low, history_low_store, steam_app_id, added_by)
+		VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
 		)
 		.bind(
 			info.title || title,
@@ -73,6 +75,7 @@ export const POST: RequestHandler = async (event) => {
 			info.players?.peak ?? null,
 			overviewData?.lowest?.price?.amount ?? null,
 			overviewData?.lowest?.shop?.name ?? null,
+			steamAppId,
 			session.user.id
 		)
 		.run();
