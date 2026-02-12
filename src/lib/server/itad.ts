@@ -145,6 +145,28 @@ export class ITADClient {
 		return res.json();
 	}
 
+	async lookupSteamAppIds(itadIds: string[]): Promise<Map<string, number>> {
+		const result = new Map<string, number>();
+		for (const chunk of this.chunk(itadIds, 200)) {
+			const params = this.params();
+			const res = await fetch(`${ITAD_BASE}/lookup/shop/61/id/v1?${params}`, {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify(chunk)
+			});
+			if (!res.ok) continue;
+			const data = (await res.json()) as Record<string, string[]>;
+			for (const [itadId, shopIds] of Object.entries(data)) {
+				const appEntry = shopIds.find((id) => id.startsWith('app/'));
+				if (appEntry) {
+					const appId = parseInt(appEntry.slice(4), 10);
+					if (!isNaN(appId)) result.set(itadId, appId);
+				}
+			}
+		}
+		return result;
+	}
+
 	private chunk<T>(array: T[], size: number): T[][] {
 		const chunks: T[][] = [];
 		for (let i = 0; i < array.length; i += size) {

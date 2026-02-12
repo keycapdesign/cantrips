@@ -131,15 +131,28 @@
 									</p>
 								{/if}
 							</div>
-							<Button
-								variant="destructive"
-								size="sm"
-								onclick={() => (confirmRemoveOpen = true)}
-								disabled={removing}
-							>
-								<Trash2 class="h-4 w-4" />
-								<span class="hidden sm:inline">{removing ? 'Removing...' : 'Remove'}</span>
-							</Button>
+							<div class="flex gap-2">
+								<Button
+									variant="outline"
+									size="sm"
+									href={game.steam_app_id
+									? `https://store.steampowered.com/app/${game.steam_app_id}/`
+									: `https://store.steampowered.com/search/?term=${encodeURIComponent(game.title)}`}
+									target="_blank"
+								>
+									<ExternalLink class="h-4 w-4" />
+									Steam
+								</Button>
+								<Button
+									variant="destructive"
+									size="sm"
+									onclick={() => (confirmRemoveOpen = true)}
+									disabled={removing}
+								>
+									<Trash2 class="h-4 w-4" />
+									<span class="hidden sm:inline">{removing ? 'Removing...' : 'Remove'}</span>
+								</Button>
+							</div>
 						</div>
 
 						{#if game.history_low != null}

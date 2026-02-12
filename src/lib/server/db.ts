@@ -14,6 +14,7 @@ export interface Game {
 	players_peak: number | null;
 	history_low: number | null;
 	history_low_store: string | null;
+	steam_app_id: number | null;
 	price_threshold: number;
 	added_by: string | null;
 	needs_review: number;
