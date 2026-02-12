@@ -31,6 +31,7 @@ export const api = {
 	},
 	admin: {
 		refresh: () => request('/api/admin/refresh', { method: 'POST' }),
+		lastRefresh: () => request<{ last_refresh: string | null }>('/api/admin/refresh'),
 		users: () => request('/api/admin/users'),
 		setRole: (userId: string, role: string) =>
 			request(`/api/admin/users/${userId}/role`, {

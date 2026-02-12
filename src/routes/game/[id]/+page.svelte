@@ -195,6 +195,11 @@
 			<Card.Root>
 				<Card.Header>
 					<Card.Title>Current Deals</Card.Title>
+					{#if game.price_updated_at}
+						<Card.Description>
+							Last updated {new Date(game.price_updated_at.replace(' ', 'T') + 'Z').toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit' })}
+						</Card.Description>
+					{/if}
 				</Card.Header>
 				<Card.Content>
 					<Table.Root>

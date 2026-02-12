@@ -53,9 +53,28 @@
 		}
 	}
 
+	let lastPriceUpdate = $state<string | null>(null);
+
 	$effect(() => {
 		loadGames();
+		loadLastRefresh();
 	});
+
+	async function loadLastRefresh() {
+		try {
+			const data = await api.admin.lastRefresh();
+			if (data.last_refresh) {
+				lastPriceUpdate = new Date(data.last_refresh.replace(' ', 'T') + 'Z').toLocaleDateString(undefined, {
+					month: 'short',
+					day: 'numeric',
+					hour: 'numeric',
+					minute: '2-digit'
+				});
+			}
+		} catch {
+			// Non-critical, ignore
+		}
+	}
 
 	// Derived filter options from game data
 	let availableShops = $derived(
@@ -155,21 +174,28 @@
 	<h1 class="text-2xl font-bold">Watchlist</h1>
 
 	<div class="flex flex-wrap items-center justify-between gap-2">
-		<ToggleGroup.Root
-			type="single"
-			value={viewMode}
-			onValueChange={(v) => {
-				if (v) viewMode = v;
-			}}
-			variant="outline"
-		>
-			<ToggleGroup.Item value="gallery" aria-label="Gallery view">
-				<LayoutGrid class="h-4 w-4" />
-			</ToggleGroup.Item>
-			<ToggleGroup.Item value="table" aria-label="Table view">
-				<List class="h-4 w-4" />
-			</ToggleGroup.Item>
-		</ToggleGroup.Root>
+		<div class="flex items-center gap-3">
+			<ToggleGroup.Root
+				type="single"
+				value={viewMode}
+				onValueChange={(v) => {
+					if (v) viewMode = v;
+				}}
+				variant="outline"
+			>
+				<ToggleGroup.Item value="gallery" aria-label="Gallery view">
+					<LayoutGrid class="h-4 w-4" />
+				</ToggleGroup.Item>
+				<ToggleGroup.Item value="table" aria-label="Table view">
+					<List class="h-4 w-4" />
+				</ToggleGroup.Item>
+			</ToggleGroup.Root>
+			{#if lastPriceUpdate}
+				<span class="text-xs text-muted-foreground hidden sm:inline">
+					Prices updated {lastPriceUpdate}
+				</span>
+			{/if}
+		</div>
 
 		<div class="flex items-center gap-1">
 			<SortPopover {sortField} {sortDesc} onSortChange={handleSortChange} />
