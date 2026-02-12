@@ -1,7 +1,18 @@
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
-import { requireAdmin } from '$lib/server/middleware';
+import { requireAdmin, requireApproved } from '$lib/server/middleware';
 import { priceRefreshJob } from '$lib/server/price-refresh';
+
+export const GET: RequestHandler = async (event) => {
+	await requireApproved(event);
+	const db = event.locals.db;
+
+	const row = await db
+		.prepare('SELECT MAX(price_updated_at) as last_refresh FROM games')
+		.first<{ last_refresh: string | null }>();
+
+	return json({ last_refresh: row?.last_refresh ?? null });
+};
 
 export const POST: RequestHandler = async (event) => {
 	await requireAdmin(event);

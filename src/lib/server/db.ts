@@ -20,6 +20,7 @@ export interface Game {
 	needs_review: number;
 	created_at: string;
 	updated_at: string;
+	price_updated_at: string | null;
 }
 
 export interface Deal {

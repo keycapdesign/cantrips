@@ -93,6 +93,14 @@ export async function priceRefreshJob(db: D1Database, apiKey: string, webhookUrl
 		await db.batch(stmts.slice(i, i + 100));
 	}
 
+	// Update price_updated_at for all refreshed games
+	const timestampStmts = games.map((g) =>
+		db.prepare("UPDATE games SET price_updated_at = datetime('now') WHERE id = ?").bind(g.id)
+	);
+	for (let i = 0; i < timestampStmts.length; i += 100) {
+		await db.batch(timestampStmts.slice(i, i + 100));
+	}
+
 	// Find best deals per game for notifications
 	const bestPerGame = new Map<number, { game: Game; price: number; deal: any }>();
 	for (const priceItem of priceData) {

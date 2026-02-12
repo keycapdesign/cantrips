@@ -57,8 +57,8 @@ export const POST: RequestHandler = async (event) => {
 		.prepare(
 			`INSERT INTO games (title, itad_id, slug, game_type, boxart_url, banner_url,
 			release_date, tags, review_score, early_access, players_recent, players_peak,
-			history_low, history_low_store, steam_app_id, added_by)
-		VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+			history_low, history_low_store, steam_app_id, added_by, price_updated_at)
+		VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))`
 		)
 		.bind(
 			info.title || title,

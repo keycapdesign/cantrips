@@ -22,11 +22,13 @@
 	let loadingInvites = $state(true);
 	let refreshing = $state(false);
 	let generating = $state(false);
+	let lastRefresh = $state<string | null>(null);
 
 	$effect(() => {
 		if ($session.data?.user?.role !== 'admin') return;
 		loadUsers();
 		loadInviteCodes();
+		loadLastRefresh();
 	});
 
 	async function loadUsers() {
@@ -52,10 +54,20 @@
 		}
 	}
 
+	async function loadLastRefresh() {
+		try {
+			const data = await api.admin.lastRefresh();
+			lastRefresh = data.last_refresh;
+		} catch {
+			// Non-critical, ignore
+		}
+	}
+
 	async function triggerRefresh() {
 		refreshing = true;
 		try {
 			await api.admin.refresh();
+			await loadLastRefresh();
 			toast.success('Price refresh complete!');
 		} catch (e) {
 			toast.error(e instanceof Error ? e.message : 'Refresh failed');
@@ -127,6 +139,17 @@
 	function formatDate(dateStr: string): string {
 		return new Date(dateStr + 'Z').toLocaleDateString();
 	}
+
+	function formatDateTime(dateStr: string): string {
+		const date = new Date(dateStr.replace(' ', 'T') + 'Z');
+		return date.toLocaleDateString(undefined, {
+			month: 'short',
+			day: 'numeric',
+			year: 'numeric',
+			hour: 'numeric',
+			minute: '2-digit'
+		});
+	}
 </script>
 
 {#if $session.data?.user?.role !== 'admin'}
@@ -151,10 +174,19 @@
 				</Card.Description>
 			</Card.Header>
 			<Card.Content>
-				<Button onclick={triggerRefresh} disabled={refreshing}>
-					<RefreshCw class="h-4 w-4 {refreshing ? 'animate-spin' : ''}" />
-					{refreshing ? 'Refreshing...' : 'Refresh Prices'}
-				</Button>
+				<div class="flex items-center gap-4">
+					<Button onclick={triggerRefresh} disabled={refreshing}>
+						<RefreshCw class="h-4 w-4 {refreshing ? 'animate-spin' : ''}" />
+						{refreshing ? 'Refreshing...' : 'Refresh Prices'}
+					</Button>
+					<p class="text-sm text-muted-foreground">
+						{#if lastRefresh}
+							Last refreshed {formatDateTime(lastRefresh)}
+						{:else}
+							Never refreshed
+						{/if}
+					</p>
+				</div>
 			</Card.Content>
 		</Card.Root>
 
