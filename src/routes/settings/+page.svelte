@@ -206,9 +206,23 @@
 			</Card.Header>
 			<Card.Content>
 				{#if loadingInvites}
-					<div class="space-y-2">
+					<div>
+						<div class="flex items-center gap-4 py-2 border-b">
+							<Skeleton class="h-3 w-10" />
+							<Skeleton class="h-3 w-12" />
+							<Skeleton class="h-3 w-14 hidden sm:block" />
+							<div class="ml-auto"><Skeleton class="h-3 w-12" /></div>
+						</div>
 						{#each Array(3) as _, i (i)}
-							<Skeleton class="h-12 w-full" />
+							<div class="flex items-center gap-4 py-3 border-b last:border-b-0">
+								<Skeleton class="h-6 w-24 rounded" />
+								<Skeleton class="h-5 w-16 rounded-full" />
+								<Skeleton class="h-4 w-20 hidden sm:block" />
+								<div class="ml-auto flex gap-1">
+									<Skeleton class="h-8 w-8 rounded" />
+									<Skeleton class="h-8 w-8 rounded" />
+								</div>
+							</div>
 						{/each}
 					</div>
 				{:else if inviteCodes.length === 0}
@@ -280,9 +294,21 @@
 			</Card.Header>
 			<Card.Content>
 				{#if loading}
-					<div class="space-y-2">
+					<div>
+						<div class="flex items-center gap-4 py-2 border-b">
+							<Skeleton class="h-3 w-10" />
+							<Skeleton class="h-3 w-12 hidden sm:block" />
+							<Skeleton class="h-3 w-12" />
+							<div class="ml-auto"><Skeleton class="h-3 w-12" /></div>
+						</div>
 						{#each Array(3) as _, i (i)}
-							<Skeleton class="h-12 w-full" />
+							<div class="flex items-center gap-4 py-3 border-b last:border-b-0">
+								<Skeleton class="h-8 w-8 rounded-full shrink-0" />
+								<Skeleton class="h-4 w-28" />
+								<Skeleton class="h-4 w-32 hidden sm:block" />
+								<Skeleton class="h-5 w-14 rounded-full" />
+								<div class="ml-auto"><Skeleton class="h-8 w-20 rounded" /></div>
+							</div>
 						{/each}
 					</div>
 				{:else}

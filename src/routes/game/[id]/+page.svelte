@@ -66,16 +66,62 @@
 </script>
 
 {#if loading}
-	<div class="space-y-6">
-		<Skeleton class="h-8 w-48" />
-		<div class="flex gap-6">
-			<Skeleton class="w-64 h-36 hidden md:block rounded-lg" />
-			<div class="flex-1 space-y-3">
-				<Skeleton class="h-10 w-3/4" />
-				<Skeleton class="h-4 w-1/2" />
-				<Skeleton class="h-4 w-1/3" />
-			</div>
-		</div>
+	<div class="space-y-8 max-w-4xl mx-auto">
+		<Skeleton class="h-8 w-36" />
+
+		<Card.Root>
+			<Card.Content>
+				<div class="flex gap-4 sm:gap-6">
+					<Skeleton class="w-64 h-36 hidden md:block rounded-lg shrink-0" />
+					<div class="flex-1 space-y-3">
+						<div class="flex items-start justify-between">
+							<div class="space-y-2">
+								<Skeleton class="h-8 w-64" />
+								<Skeleton class="h-4 w-48" />
+							</div>
+							<div class="flex gap-2">
+								<Skeleton class="h-8 w-20 rounded-md" />
+								<Skeleton class="h-8 w-24 rounded-md" />
+							</div>
+						</div>
+						<Skeleton class="h-4 w-40" />
+						<div class="flex gap-2">
+							<Skeleton class="h-5 w-14 rounded-full" />
+							<Skeleton class="h-5 w-16 rounded-full" />
+							<Skeleton class="h-5 w-12 rounded-full" />
+						</div>
+					</div>
+				</div>
+			</Card.Content>
+		</Card.Root>
+
+		<Card.Root>
+			<Card.Header>
+				<Skeleton class="h-5 w-28" />
+			</Card.Header>
+			<Card.Content>
+				<Skeleton class="h-48 w-full rounded-md" />
+			</Card.Content>
+		</Card.Root>
+
+		<Card.Root>
+			<Card.Header>
+				<Skeleton class="h-5 w-28" />
+			</Card.Header>
+			<Card.Content>
+				<div class="space-y-3">
+					{#each Array(3) as _, i (i)}
+						<div class="flex items-center gap-4 py-2">
+							<Skeleton class="h-4 w-24" />
+							<Skeleton class="h-4 w-20 hidden sm:block" />
+							<Skeleton class="h-4 w-20 hidden sm:block" />
+							<Skeleton class="h-5 w-14 rounded-full" />
+							<Skeleton class="h-4 w-16 ml-auto" />
+						</div>
+					{/each}
+				</div>
+			</Card.Content>
+		</Card.Root>
 	</div>
 {:else if error}
 	<p class="text-destructive text-center py-12">{error}</p>

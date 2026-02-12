@@ -229,17 +229,50 @@
 		{#if viewMode === 'gallery'}
 			<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
 				{#each Array(8) as _, i (i)}
-					<div class="space-y-3">
-						<Skeleton class="h-48 w-full rounded-lg" />
-						<Skeleton class="h-4 w-3/4" />
-						<Skeleton class="h-4 w-1/2" />
+					<div class="space-y-2">
+						<Skeleton class="aspect-video w-full rounded-lg" />
+						<Skeleton class="h-5 w-3/4" />
+						<div class="flex gap-1">
+							<Skeleton class="h-5 w-12 rounded-full" />
+							<Skeleton class="h-5 w-16 rounded-full" />
+							<Skeleton class="h-5 w-10 rounded-full" />
+						</div>
+						<div class="flex items-center gap-2">
+							<Skeleton class="h-7 w-16" />
+							<Skeleton class="h-4 w-12" />
+						</div>
+						<Skeleton class="h-3 w-20" />
 					</div>
 				{/each}
 			</div>
 		{:else}
-			<div class="space-y-2">
+			<div class="rounded-md border">
+				<div class="flex items-center gap-4 px-4 py-3 border-b">
+					<div class="w-12"></div>
+					<Skeleton class="h-3 w-10" />
+					<Skeleton class="h-3 w-8 hidden sm:block" />
+					<Skeleton class="h-3 w-10 hidden sm:block" />
+					<Skeleton class="h-3 w-14" />
+					<Skeleton class="h-3 w-10 hidden sm:block" />
+					<Skeleton class="h-3 w-12" />
+					<Skeleton class="h-3 w-8 hidden md:block" />
+					<Skeleton class="h-3 w-14 hidden md:block" />
+				</div>
 				{#each Array(6) as _, i (i)}
-					<Skeleton class="h-12 w-full" />
+					<div class="flex items-center gap-4 px-4 py-3 border-b last:border-b-0">
+						<Skeleton class="h-10 w-10 rounded shrink-0" />
+						<Skeleton class="h-4 w-32" />
+						<div class="hidden sm:flex gap-1">
+							<Skeleton class="h-5 w-12 rounded-full" />
+							<Skeleton class="h-5 w-14 rounded-full" />
+						</div>
+						<Skeleton class="h-5 w-14 rounded-full hidden sm:block" />
+						<Skeleton class="h-4 w-14" />
+						<Skeleton class="h-4 w-14 hidden sm:block" />
+						<Skeleton class="h-5 w-12 rounded-full" />
+						<Skeleton class="h-4 w-16 hidden md:block" />
+						<Skeleton class="h-4 w-14 hidden md:block" />
+					</div>
 				{/each}
 			</div>
 		{/if}
