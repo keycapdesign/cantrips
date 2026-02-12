@@ -90,7 +90,7 @@
 
 		<!-- Header -->
 		<Card.Root>
-			<Card.Content class="pt-6">
+			<Card.Content>
 				<div class="flex gap-4 sm:gap-6">
 					{#if game.banner_url}
 						<img
