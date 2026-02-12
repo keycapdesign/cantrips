@@ -51,7 +51,7 @@
 				oninput={(e) => onValueChange(e.currentTarget.value)}
 				onblur={handleBlur}
 				onkeydown={handleKeydown}
-				class="h-8 w-48 pl-7 text-sm"
+				class="h-8 w-36 sm:w-48 pl-7 text-sm"
 			/>
 		</div>
 		{#if value}
@@ -71,6 +71,6 @@
 {:else}
 	<Button variant="ghost" size="sm" onclick={expand}>
 		<Search class="h-4 w-4" />
-		Search
+		<span class="hidden sm:inline">Search</span>
 	</Button>
 {/if}

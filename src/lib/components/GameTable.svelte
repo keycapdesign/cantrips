@@ -9,7 +9,8 @@
 		type ColumnDef,
 		getCoreRowModel,
 		getSortedRowModel,
-		type SortingState
+		type SortingState,
+		type VisibilityState
 	} from '@tanstack/table-core';
 	import * as Table from '$lib/components/ui/table';
 	import * as Avatar from '$lib/components/ui/avatar';
@@ -41,6 +42,41 @@
 	}
 
 	let { games, sorting, onSortingChange }: Props = $props();
+
+	// Responsive column visibility
+	let isMobile = $state(false);
+	let isTablet = $state(false);
+
+	$effect(() => {
+		const mqMobile = window.matchMedia('(max-width: 639px)');
+		const mqTablet = window.matchMedia('(max-width: 767px)');
+
+		isMobile = mqMobile.matches;
+		isTablet = mqTablet.matches;
+
+		const handleMobile = (e: MediaQueryListEvent) => {
+			isMobile = e.matches;
+		};
+		const handleTablet = (e: MediaQueryListEvent) => {
+			isTablet = e.matches;
+		};
+
+		mqMobile.addEventListener('change', handleMobile);
+		mqTablet.addEventListener('change', handleTablet);
+
+		return () => {
+			mqMobile.removeEventListener('change', handleMobile);
+			mqTablet.removeEventListener('change', handleTablet);
+		};
+	});
+
+	let columnVisibility = $derived<VisibilityState>({
+		tags: !isMobile,
+		status: !isMobile,
+		regular_price: !isMobile,
+		shop_name: !isTablet,
+		history_low: !isTablet
+	});
 
 	const columns: ColumnDef<Game>[] = [
 		{
@@ -111,6 +147,9 @@
 		state: {
 			get sorting() {
 				return sorting;
+			},
+			get columnVisibility() {
+				return columnVisibility;
 			}
 		},
 		onSortingChange(updater) {
